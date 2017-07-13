@@ -1,6 +1,7 @@
 var objs;
 var item;
 var player;
+var mario;
 var input  = {direction:undefined, action:undefined}
 function setup() {
     width = $(window).width();
@@ -10,6 +11,11 @@ function setup() {
     myCanvas.parent('myContainer');
 
     objs = [];
+    mario_running_right = loadAnimation("sprites/run-right-1.png", "sprites/run-right-3.png");
+    mario_running_left = loadAnimation("sprites/run-left-1.png", "sprites/run-left-3.png");
+    mario_stand_right = loadAnimation("sprites/run-right-1.png");
+    mario_stand_left = loadAnimation("sprites/run-left-1.png");
+    
 }
 
 function draw(){
@@ -28,6 +34,7 @@ function draw(){
         player.update(objs);
         player.draw();
     }
+    drawSprites();
 }
 
 function mousePressed() {
@@ -42,7 +49,7 @@ function mousePressed() {
     }
 }
 function mouseDragged(){
-    console.log("here")
+
     if(item && mouseDown){
         item.position.x = mouseX;
         item.position.y = mouseY;
@@ -93,6 +100,8 @@ function keyPressed(e) {
         }
     }
     if(e.key == "0"){
+        if(player)
+            player.mario.remove();
         player = new Player(mouseX, mouseY);
     }
 }
@@ -100,11 +109,13 @@ function keyReleased(e) {
     
     if(e.key == "a"){
         if(player && input.direction == "left"){
+            player.command("stand-left")
             input.direction = undefined
         }
     }
     if(e.key == "d"){
         if(player && input.direction == "right"){
+            player.command("stand-right")
             input.direction = undefined;
         }
     }

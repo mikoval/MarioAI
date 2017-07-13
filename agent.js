@@ -1,25 +1,38 @@
 
 function Player(x, y){
     this.position = {x:x, y:y}
-    this.width = 10;
-    this.height= 30;
+    this.width = 35;
+    this.height= 35;
     this.velocity = {x:0, y:0}
     this.acceleration = {x:0, y:0}
+    this.mario = createSprite(40, 40, 40, 40);
+    this.mario.addAnimation("run-right", mario_running_right);
+    this.mario.addAnimation("run-left", mario_running_left);
+    this.mario.addAnimation("stand-right", mario_stand_right);
+    this.mario.addAnimation("stand-left", mario_stand_left);
+    this.mario.changeAnimation("stand-right");
     this.draw = function(selected){
         var x = this.position.x - this.width/2;
         var y = this.position.y - this.height/2;
 
-        fill(255);
-        
-        rect(x,y, this.width, this.height );
+        this.mario.position.x = this.position.x;
+        this.mario.position.y = this.position.y;
     }
     this.command = function(command){
        
         if(command == "right"){
+            this.mario.changeAnimation("run-right");
             this.acceleration.x = 2.0;
         }
         else if(command == "left"){
+            this.mario.changeAnimation("run-left");
             this.acceleration.x = -2.0;
+        }
+        else if(command == "stand-left"){
+            this.mario.changeAnimation("stand-left");
+        }
+        else if(command == "stand-right"){
+            this.mario.changeAnimation("stand-right");
         }
         else if(command == "jump"){
 
@@ -60,9 +73,7 @@ function Player(x, y){
             if(this.position.x + this.width/2 <  arr[i].position.x - arr[i].width/2)hit = false;
             if(this.position.x - this.width/2 >  arr[i].position.x + arr[i].width/2)hit = false;
             if(this.position.y + this.height/2 <  arr[i].position.y)hit = false;
-            console.log("character bottom: "+  (this.position.y +this.height/2))
-            console.log("wall top: " + arr[i].position.y);
-            console.log("wall top with velocity: " + (arr[i].position.y+ this.velocity.y));
+            
 
             if(hit && this.position.y +this.height/2 <= arr[i].position.y + this.velocity.y){
 
