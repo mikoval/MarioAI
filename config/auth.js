@@ -6,8 +6,8 @@ var config ={
     production:{
 
         'facebookAuth' : {
-            'clientID'      : '336554796778464', // your App ID
-            'clientSecret'  : '5c79a7bfd7a259b0b2a0b030e18d8f14', // your App Secret
+            'clientID'      : '312744345803447', // your App ID
+            'clientSecret'  : 'f7d46350e79b5ab9254f7d696026de7d', // your App Secret
             'callbackURL'   : 'https://secure-harbor-24413.herokuapp.com/'
         },
 
