@@ -10,7 +10,7 @@ module.exports = function(app, passport) {
 
     // PROFILE SECTION =========================
     app.get('/home', isLoggedIn, function(req, res) {
-        Level.remove({}, function(err, user){});
+
         Level.find({}, function(err, levels){
             res.render('home.ejs', {
                 user : req.user,
