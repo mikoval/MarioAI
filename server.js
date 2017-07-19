@@ -10,16 +10,8 @@ var cookieParser = require('cookie-parser');
 var bodyParser   = require('body-parser');
 var session      = require('express-session');
 var RedisStore = require('connect-redis')(session);
+var url = require('url');
 
-if (process.env.REDISTOGO_URL) {
-      // inside if statement
-    var rtg   = require("url").parse(process.env.REDISTOGO_URL);
-     redis = require("redis").createClient(rtg.port, rtg.hostname);
-
-    redis.auth(rtg.auth.split(":")[1]);
-} else {
-     redis = require("redis").createClient();
-}
 
 var configDB = require('./config/database.js');
 
@@ -36,7 +28,22 @@ app.use(bodyParser()); // get information from html forms
 app.set('view engine', 'ejs'); // set up ejs for templating
 
 // required for passport
-app.use(session({ store: new RedisStore({client:redis}), secret: 'secret' , resave:true, saveUninitialized:false})); // session secret
+if(process.env.REDISTOGO_URL){
+     redisUrl = url.parse(process.env.REDISTOGO_URL);
+     redisAuth = redisUrl.auth.split(":");
+     options = {
+        host: redisUrl.hostname,
+        port: redisUrl.port,
+        db: redisAuth[0],
+        pass: redisAuth[1]
+      }
+      app.use(session({ store: new RedisStore(options)}));
+}
+else{
+    options = {}
+    app.use(session({ secret:"secret"}));
+}
+
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
