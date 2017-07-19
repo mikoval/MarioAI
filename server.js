@@ -37,7 +37,7 @@ if(process.env.REDISTOGO_URL){
         db: redisAuth[0],
         pass: redisAuth[1]
       }
-      app.use(session({ store: new RedisStore(options)}));
+      app.use(session({ store: new RedisStore(options), secret: 'keyboard cat'}));
 }
 else{
     options = {}
