@@ -31,6 +31,8 @@ app.set('view engine', 'ejs'); // set up ejs for templating
 if(process.env.REDISTOGO_URL){
      redisUrl = url.parse(process.env.REDISTOGO_URL);
      redisAuth = redisUrl.auth.split(":");
+     console.log(redisUrl);
+     console.log(redisAuth);
      options = {
         host: redisUrl.hostname,
         port: redisUrl.port,
@@ -38,10 +40,12 @@ if(process.env.REDISTOGO_URL){
         pass: redisAuth[1]
       }
       app.use(session({ store: new RedisStore(options), secret: 'keyboard cat'}));
+      console.log("production")
 }
 else{
     options = {}
     app.use(session({ secret:"secret"}));
+    console.log("dev")
 }
 
 app.use(passport.initialize());
