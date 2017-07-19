@@ -27,7 +27,7 @@ app.use(bodyParser()); // get information from html forms
 app.set('view engine', 'ejs'); // set up ejs for templating
 
 // required for passport
-app.use(session({ store: new RedisStore({ host: 'localhost', port: 3000, client: redis }), secret: 'secret' , resave:true, saveUninitialized:false})); // session secret
+app.use(session({ store: new RedisStore(), secret: 'secret' , resave:true, saveUninitialized:false})); // session secret
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
