@@ -68,7 +68,7 @@ module.exports = function(app, passport) {
         app.get('/auth/facebook/callback',
             passport.authenticate('facebook', {
                 successRedirect : '/home',
-                failureRedirect : '/'
+                failureRedirect : '/jalksd;fakdfja;slfjasdlfkja'
             }));
 
    
@@ -96,7 +96,7 @@ module.exports = function(app, passport) {
 
 // route middleware to ensure user is logged in
 function isLoggedIn(req, res, next) {
-
+    console.log('checking logged in');
     console.log(req.isAuthenticated());
     console.log(req.session);
 
