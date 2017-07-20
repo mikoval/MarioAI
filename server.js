@@ -38,8 +38,7 @@ if(process.env.REDISTOGO_URL){
         
         pass: redisAuth[1]
       }
-      console.log(options);
-      app.use(session({ store: new RedisStore(options), secret: 'keyboard cat'}));
+      app.use(session({ store: new RedisStore(options), secret: 'secret'}));
       console.log("production")
 }
 else{
