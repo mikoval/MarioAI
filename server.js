@@ -31,14 +31,14 @@ app.set('view engine', 'ejs'); // set up ejs for templating
 if(process.env.REDISTOGO_URL){
      redisUrl = url.parse(process.env.REDISTOGO_URL);
      redisAuth = redisUrl.auth.split(":");
-     console.log(redisUrl);
-     console.log(redisAuth);
+     
      options = {
         host: redisUrl.hostname,
         port: redisUrl.port,
-        db: redisAuth[0],
+        db: parseInt(redisAuth[0]),
         pass: redisAuth[1]
       }
+      console.log(options);
       app.use(session({ store: new RedisStore(options), secret: 'keyboard cat'}));
       console.log("production")
 }
