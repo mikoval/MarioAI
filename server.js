@@ -35,7 +35,7 @@ if(process.env.REDISTOGO_URL){
      options = {
         host: redisUrl.hostname,
         port: redisUrl.port,
-        db: parseInt(redisAuth[0]),
+        
         pass: redisAuth[1]
       }
       console.log(options);
