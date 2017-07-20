@@ -11,7 +11,10 @@ module.exports = function(app, passport) {
     // PROFILE SECTION =========================
     app.get('/home', isLoggedIn, function(req, res) {
 
-        Level.find({}, function(err, levels){
+        console.log(req.user.id)
+
+        Level.find({created_by: req.user.id}, function(err, levels){
+                    console.log(levels);
             res.render('home.ejs', {
                 user : req.user,
                 levels : levels
@@ -30,10 +33,11 @@ module.exports = function(app, passport) {
         level.width = param.width;
         level.name = param.name;
         level.height = param.height;
+        level.created_by = req.user.id;
 
         
         level.save(function(){
-            Level.find({}, function(err, levels){
+            Level.find({created_by: req.user.id}, function(err, levels){
                 res.json(levels);
             });
         });
@@ -47,7 +51,7 @@ module.exports = function(app, passport) {
         console.log(param);
 
         Level.findByIdAndRemove(param, function(){
-            Level.find({}, function(err, levels){
+            Level.find({created_by: req.user.id}, function(err, levels){
                 res.json(levels);
             });
         });
