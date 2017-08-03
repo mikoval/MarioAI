@@ -108,7 +108,8 @@ function createLevelWidgets(arr){
     str += "<div class=\"level-box\">"
     
     +"<h3>" + arr[i].name  + "</h3>"
-    +"<span id='"+arr[i]._id+"' class='delete-level glyphicon glyphicon-trash'></span>"
+    +"<span id='"+arr[i]._id+"' class='delete-level glyphicon glyphicon-trash'></span><br>"
+    +"<a href='/edit/"+ arr[i]._id +"'>Edit</a>"
     +"</div>";
 
   }

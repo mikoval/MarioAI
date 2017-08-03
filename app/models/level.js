@@ -9,7 +9,7 @@ var levelSchema = mongoose.Schema({
     width: String,
     height: String,
     created_by: String,
-    walls: String,
+    game: String,
 
 
     

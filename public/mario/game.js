@@ -3,22 +3,62 @@ var item;
 var player;
 var mario;
 var input  = {direction:undefined, action:undefined}
+var saved = false;
 function setup() {
     width = $(window).width();
     height = $(window).height();
 
     var myCanvas = createCanvas(width, height);
     myCanvas.parent('myContainer');
-
+    game = JSON.parse(game);
     objs = [];
-    mario_running_right = loadAnimation("sprites/run-right-1.png", "sprites/run-right-3.png");
-    mario_running_left = loadAnimation("sprites/run-left-1.png", "sprites/run-left-3.png");
-    mario_stand_right = loadAnimation("sprites/run-right-1.png");
-    mario_stand_left = loadAnimation("sprites/run-left-1.png");
+    console.log(game.objs);
+    for(var i = 0; i < game.objs.length; i++){
+        item = new floorObj(game.objs[i].position, game.objs[i].width)
+
+        objs.push(item);
+    }
+    console.log(objs);
+
+    
+    mario_running_right = loadAnimation("/sprites/run-right-1.png", "/sprites/run-right-3.png");
+    mario_running_left = loadAnimation("/sprites/run-left-1.png", "/sprites/run-left-3.png");
+    mario_stand_right = loadAnimation("/sprites/run-right-1.png");
+    mario_stand_left = loadAnimation("/sprites/run-left-1.png");
+    saveGame();
+
     
 }
 
+
+
+function saveGame(){
+    var game = {
+        objs:objs
+    }
+    var data = {
+        id:id,
+        game:JSON.stringify(game),
+
+    }
+    console.log("saving");
+    $.ajax({
+        type:"POST",
+        url:"/edit", 
+        data:data ,
+        success: function(data){
+            setTimeout(saveGame, 10000);  
+        },
+        error: function(){
+          console.log("failed")
+        }
+    })  
+   
+}
+
+
 function draw(){
+
     background(50);
     for(var i =0; i < objs.length; i++){
         objs[i].draw();

@@ -4,11 +4,17 @@ module.exports = function(app, passport) {
 // normal routes ===============================================================
 
     // show the home page (will also have our login links)
-    app.get('/', function(req, res) {
+    app.get('/login', function(req, res) {
         res.render('login.ejs');
     });
 
     // PROFILE SECTION =========================
+    
+    app.get('/', function(req, res) {
+    	res.redirect('/home');
+   
+        
+    });
     app.get('/home', isLoggedIn, function(req, res) {
 
         console.log(req.user.id)
@@ -34,6 +40,7 @@ module.exports = function(app, passport) {
         level.name = param.name;
         level.height = param.height;
         level.created_by = req.user.id;
+        level.game = "{\"objs\":[]}";
 
         
         level.save(function(){
@@ -58,6 +65,46 @@ module.exports = function(app, passport) {
         
      
     });
+    app.get('/edit/:level', isLoggedIn, function(req, res) {
+
+
+        Level.findOne({_id: req.params.level, created_by: req.user.id}, function(err, level){
+                res.render('edit.ejs', {
+                user : req.user,
+                level : level
+
+            })
+
+        })
+
+        
+    });
+    app.post('/edit', isLoggedIn, function(req, res) {
+
+        var param = req.body;
+        var id = param.id;
+        var game = param.game;
+
+        
+        Level.findOne({_id:id}, function (err, level) {
+
+            console.log(level);
+
+            if (err) return;
+
+            if(level == undefined) return;
+
+            level.game = game;
+            level.save(function (err, updatedLevel) {
+                console.log("here");
+                if (err) return;
+                res.send(updatedLevel);
+            });
+        });
+
+        
+    });
+
 
     // LOGOUT ==============================
     app.get('/logout', function(req, res) {
@@ -66,34 +113,34 @@ module.exports = function(app, passport) {
     });
 
 
-        app.get('/auth/facebook', passport.authenticate('facebook', { scope : 'email' }));
+    app.get('/auth/facebook', passport.authenticate('facebook', { scope : 'email' }));
 
-        // handle the callback after facebook has authenticated the user
-        app.get('/auth/facebook/callback',
-            passport.authenticate('facebook', {
-                successRedirect : '/home',
-                failureRedirect : '/jalksd;fakdfja;slfjasdlfkja'
-            }));
-
-   
-        app.get('/auth/twitter', passport.authenticate('twitter', { scope : 'email' }));
-
-        // handle the callback after twitter has authenticated the user
-        app.get('/auth/twitter/callback',
-            passport.authenticate('twitter', {
-                successRedirect : '/home',
-                failureRedirect : '/'
-            }));
+    // handle the callback after facebook has authenticated the user
+    app.get('/auth/facebook/callback',
+        passport.authenticate('facebook', {
+            successRedirect : '/home',
+            failureRedirect : '/jalksd;fakdfja;slfjasdlfkja'
+        }));
 
 
-        app.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
+    app.get('/auth/twitter', passport.authenticate('twitter', { scope : 'email' }));
 
-        // the callback after google has authenticated the user
-        app.get('/auth/google/callback',
-            passport.authenticate('google', {
-                successRedirect : '/home',
-                failureRedirect : '/'
-            }));
+    // handle the callback after twitter has authenticated the user
+    app.get('/auth/twitter/callback',
+        passport.authenticate('twitter', {
+            successRedirect : '/home',
+            failureRedirect : '/'
+        }));
+
+
+    app.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
+
+    // the callback after google has authenticated the user
+    app.get('/auth/google/callback',
+        passport.authenticate('google', {
+            successRedirect : '/home',
+            failureRedirect : '/'
+        }));
 
 
 };
@@ -107,7 +154,7 @@ function isLoggedIn(req, res, next) {
     if (req.isAuthenticated())
         return next();
 
-    res.redirect('/');
+    res.redirect('/login');
 }
 function generateUUID() {
     var d = new Date().getTime();

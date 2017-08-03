@@ -1,7 +1,7 @@
 
-function floorObj(){
-    this.position = {x:mouseX, y:mouseY}
-    this.width = 100;
+function floorObj(position = {x:mouseX, y:mouseY}, width= 100 ){
+    this.position =position
+    this.width = width;
     this.height=1000;
     this.draw = function(selected){
         var x = this.position.x - this.width/2;
