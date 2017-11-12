@@ -15,7 +15,7 @@
 
 <div class="navbar navbar-default navbar-fixed-top">
     <div class="navbar-collapse collapse">
-      <div style = "text-align:center"><h3>Mario Level Builder</h3></div>
+      <div style = "text-align:center"><h3>Puzzle Maker</h3></div>
     </div>
     <a>
     <div class="logout-btn">
@@ -24,45 +24,11 @@
     </a>
 </div>
 
-<div class="modal fade" tabindex="-1" role="dialog" id="new-level-modal" >
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Modal title</h4>
-      </div>
-      <div class="modal-body">
-        <div> Name: <input id = "level-name"/></div>
-        <div>Width: 
-           <select name="Width" id = "width-dd">
-            <option value="1000">1000</option>
-            <option value="2000">2000</option>
-            <option value="3000">3000</option>
-            <option value="4000">4000</option>
-          </select>
 
-        </div>
-        <div>Height: 
-          <select name="Height" id = "height-dd">
-            <option value="1000">1000</option>
-            <option value="2000">2000</option>
-            <option value="3000">3000</option>
-            <option value="4000">4000</option>
-          </select>
-      </div>
-
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" id = "create-level-submit">Create Level</button>
-      </div>
-    </div>
-  </div>
-</div>
 <body>
 
 <div class="container" style="padding-top:100px">
-<div><button type = "button" class = "new-level-btn" data-toggle="modal" data-target="#new-level-modal">Add New Level</button></div>
+<div><button type = "button" class = "new-level-btn" data-toggle="modal" data-target="#new-level-modal"><a href='/create'>Add New Level</a></button></div>
 
 <div id = "level-container">
 </div>
@@ -73,45 +39,17 @@
 </body>
 </html>
 <script>
-$(".logout-btn").on("click", function(){
-  window.location = "/logout";
-})
-$("#create-level-submit").on('click', function(){
-  var name = $("#level-name").val();
-  var width = $("#width-dd").val();
-  var height = $("#height-dd").val()
-  var obj = {name:name, width: width, height: height};
-  console.log(obj);
-  if(name == ""){return;}
-  $("#new-level-modal").modal('hide');
-  var data = obj;
-  $.ajax({
-    type:"POST",
-    url:"/home", 
-    data:data ,
-    success: function(data){
-      console.log(data.length)
-      createLevelWidgets(data);
-    },
-    error: function(){
-      console.log("failed")
-    }
-  })
-})
-
-
-
 function createLevelWidgets(arr){
+
   var str = "";
   for(var i = 0; i < arr.length; i++){
     
     str += "<div class=\"level-box\">"
     
-    +"<h3>" + arr[i].name  + "</h3>"
+    +"<h3>" + "Game" + "</h3>"
     +"<span id='"+arr[i]._id+"' class='delete-level glyphicon glyphicon-trash'></span><br>"
-    +"<a href='/edit/"+ arr[i]._id +"'>Edit</a>"
+    +"<a href='/play/"+ arr[i]._id +"'>play</a>"
     +"</div>";
-
   }
   $("#level-container").html(str);
   bindDeleteLevel();
@@ -121,7 +59,6 @@ function bindDeleteLevel(){
     var level = $(this).attr('id');
     var data = {id:level};
     $.ajax({
-
       type:"DELETE",
       url:"/home", 
       data:data ,
@@ -134,6 +71,9 @@ function bindDeleteLevel(){
     })
   })
 }
+
+
+
 var levels = <%- JSON.stringify(levels) %>;
 createLevelWidgets(levels);
 </script>

@@ -1,4 +1,4 @@
-var Level = require('./models/level');
+var Game = require('./models/game');
 module.exports = function(app, passport) {
 
 // normal routes ===============================================================
@@ -19,9 +19,9 @@ module.exports = function(app, passport) {
 
         console.log(req.user.id)
 
-        Level.find({created_by: req.user.id}, function(err, levels){
-                    console.log(levels);
-            res.render('home.ejs', {
+        Game.find({created_by: req.user.id}, function(err, levels){
+            console.log(levels.length);
+                res.render('home.ejs', {
                 user : req.user,
                 levels : levels
 
@@ -34,44 +34,41 @@ module.exports = function(app, passport) {
     app.post('/home', isLoggedIn, function(req, res) {
 
         var param = req.body;
-        var level = new Level();
+        var game = new Game();
         
-        level.width = param.width;
-        level.name = param.name;
-        level.height = param.height;
-        level.created_by = req.user.id;
-        level.game = "{\"objs\":[]}";
+
+        game.game = param.data;
+        game.created_by = req.user.id
 
         
-        level.save(function(){
-            Level.find({created_by: req.user.id}, function(err, levels){
-                res.json(levels);
-            });
+        game.save(function(){
+            res.json(game._id);
         });
         
      
     });
-    app.delete('/home', isLoggedIn, function(req, res) {
+     app.delete('/home', isLoggedIn, function(req, res) {
 
         var param = req.body.id;
       
         console.log(param);
 
-        Level.findByIdAndRemove(param, function(){
-            Level.find({created_by: req.user.id}, function(err, levels){
+        Game.findByIdAndRemove(param, function(){
+            Game.find({created_by: req.user.id}, function(err, levels){
                 res.json(levels);
             });
         });
         
      
     });
-    app.get('/edit/:level', isLoggedIn, function(req, res) {
+
+    app.get('/play/:id', isLoggedIn, function(req, res) {
 
 
-        Level.findOne({_id: req.params.level, created_by: req.user.id}, function(err, level){
-                res.render('edit.ejs', {
+        Game.findOne({_id: req.params.id}, function(err, game){
+                res.render('play.ejs', {
                 user : req.user,
-                level : level
+                game : game
 
             })
 
@@ -79,32 +76,20 @@ module.exports = function(app, passport) {
 
         
     });
-    app.post('/edit', isLoggedIn, function(req, res) {
+   
+    app.get('/create', isLoggedIn, function(req, res) {
 
-        var param = req.body;
-        var id = param.id;
-        var game = param.game;
 
         
-        Level.findOne({_id:id}, function (err, level) {
+        res.render('create.ejs', {
+            user : req.user,
 
-            console.log(level);
+        })
 
-            if (err) return;
-
-            if(level == undefined) return;
-
-            level.game = game;
-            level.save(function (err, updatedLevel) {
-                console.log("here");
-                if (err) return;
-                res.send(updatedLevel);
-            });
-        });
+        
 
         
     });
-
 
     // LOGOUT ==============================
     app.get('/logout', function(req, res) {
